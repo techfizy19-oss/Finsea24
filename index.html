@@ -1,34 +1,146 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Finsea24 Trading Calculator</title>
+  <meta charset="UTF-8">
+  <title>Finsea24 Trading Calculator – Profit, Risk & Analysis</title>
+
+  <!-- SEO -->
+  <meta name="description" content="Finsea24 is a professional trading calculator to calculate profit loss, returns, risk reward and visualize trades with charts.">
+  <meta name="keywords" content="trading calculator, profit loss calculator, risk reward, stock market, Finsea24">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
   <style>
-    body { font-family: Arial; background: #f4f6f8; padding: 40px; }
-    .box { max-width: 420px; margin: auto; background: white; padding: 20px; border-radius: 8px; }
-    input, button { width: 100%; padding: 10px; margin: 6px 0; }
-    button { background: #1f6feb; color: white; border: none; }
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f6f8;
+      padding: 30px;
+    }
+    .container {
+      max-width: 600px;
+      margin: auto;
+      background: #fff;
+      padding: 25px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.05);
+    }
+    h1 {
+      text-align: center;
+    }
+    label {
+      font-weight: bold;
+      display: block;
+      margin-top: 12px;
+    }
+    input {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 20px;
+      background: #2563eb;
+      color: #fff;
+      border: none;
+      font-size: 16px;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+    .result {
+      margin-top: 20px;
+      font-size: 16px;
+    }
+    .profit { color: green; font-weight: bold; }
+    .loss { color: red; font-weight: bold; }
+    footer {
+      text-align: center;
+      margin-top: 25px;
+      font-size: 13px;
+      color: #666;
+    }
   </style>
 </head>
+
 <body>
 
-<div class="box">
-  <h2>Finsea24 Trading Calculator</h2>
-  <input id="entry" placeholder="Entry Price">
-  <input id="exit" placeholder="Exit Price">
-  <input id="qty" placeholder="Quantity">
-  <button onclick="calc()">Calculate</button>
-  <p id="out"></p>
+<div class="container">
+  <h1>Finsea24 Trading Calculator</h1>
+
+  <label>Entry Price (₹)</label>
+  <input id="entry" type="number">
+
+  <label>Exit Price (₹)</label>
+  <input id="exit" type="number">
+
+  <label>Quantity</label>
+  <input id="qty" type="number">
+
+  <label>Stop Loss (₹)</label>
+  <input id="sl" type="number">
+
+  <label>Target (₹)</label>
+  <input id="target" type="number">
+
+  <button onclick="calculate()">Calculate Trade</button>
+
+  <div class="result" id="output"></div>
+
+  <canvas id="tradeChart" style="margin-top:25px;"></canvas>
+
+  <footer>
+    Finsea24 • Trading Calculator • Made in India 🇮🇳
+  </footer>
 </div>
 
 <script>
-function calc() {
-  let e = +entry.value;
-  let x = +exit.value;
-  let q = +qty.value;
-  out.innerText = "Profit / Loss: ₹" + ((x - e) * q).toFixed(2);
+let chart;
+
+function calculate() {
+  let entry = +entryInput.value || +entry.value;
+  let exitP = +exit.value;
+  let qty = +qty.value;
+  let sl = +sl.value;
+  let target = +target.value;
+
+  let pnl = (exitP - entry) * qty;
+  let percent = ((exitP - entry) / entry) * 100;
+  let risk = entry - sl;
+  let reward = target - entry;
+  let rr = risk > 0 ? (reward / risk).toFixed(2) : "N/A";
+  let breakeven = entry;
+
+  let pnlClass = pnl >= 0 ? "profit" : "loss";
+
+  output.innerHTML = `
+    <p>Profit / Loss: <span class="${pnlClass}">₹${pnl.toFixed(2)}</span></p>
+    <p>Return: ${percent.toFixed(2)}%</p>
+    <p>Risk–Reward Ratio: ${rr}</p>
+    <p>Break-even Price: ₹${breakeven}</p>
+  `;
+
+  drawChart(entry, exitP);
+}
+
+function drawChart(entry, exitP) {
+  if (chart) chart.destroy();
+
+  chart = new Chart(document.getElementById("tradeChart"), {
+    type: "bar",
+    data: {
+      labels: ["Entry Price", "Exit Price"],
+      datasets: [{
+        label: "Price Comparison",
+        data: [entry, exitP],
+        backgroundColor: ["#64748b", "#22c55e"]
+      }]
+    }
+  });
 }
 </script>
 
 </body>
 </html>
-
