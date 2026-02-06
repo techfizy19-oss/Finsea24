@@ -1,1 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Finsea24 Trading Calculator</title>
+  <style>
+    body { font-family: Arial; background: #f4f6f8; padding: 40px; }
+    .box { max-width: 420px; margin: auto; background: white; padding: 20px; border-radius: 8px; }
+    input, button { width: 100%; padding: 10px; margin: 6px 0; }
+    button { background: #1f6feb; color: white; border: none; }
+  </style>
+</head>
+<body>
+
+<div class="box">
+  <h2>Finsea24 Trading Calculator</h2>
+  <input id="entry" placeholder="Entry Price">
+  <input id="exit" placeholder="Exit Price">
+  <input id="qty" placeholder="Quantity">
+  <button onclick="calc()">Calculate</button>
+  <p id="out"></p>
+</div>
+
+<script>
+function calc() {
+  let e = +entry.value;
+  let x = +exit.value;
+  let q = +qty.value;
+  out.innerText = "Profit / Loss: ₹" + ((x - e) * q).toFixed(2);
+}
+</script>
+
+</body>
+</html>
 
