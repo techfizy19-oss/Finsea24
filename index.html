@@ -2,10 +2,10 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Finsea24 Trading Calculator – Profit, Risk & Analysis</title>
+  <title>Finsea24.com Trading Calculator – Profit, Risk & Analysis</title>
 
   <!-- SEO -->
-  <meta name="description" content="Finsea24 is a professional trading calculator to calculate profit loss, returns, risk reward and visualize trades with charts.">
+  <meta name="description" content="Finsea24 is a professional trading calculator to calculate profit loss, returns, risk reward, and visualize trades with charts.">
   <meta name="keywords" content="trading calculator, profit loss calculator, risk reward, stock market, Finsea24">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -70,19 +70,25 @@
 <div class="container">
   <h1>Finsea24 Trading Calculator</h1>
 
-  <label>Entry Price (₹)</label>
+  <label>Currency</label>
+  <select id="currency">
+    <option value="€">EUR (€)</option>
+    <option value="$">USD ($)</option>
+  </select>
+
+  <label>Entry Price</label>
   <input id="entry" type="number">
 
-  <label>Exit Price (₹)</label>
+  <label>Exit Price</label>
   <input id="exit" type="number">
 
   <label>Quantity</label>
   <input id="qty" type="number">
 
-  <label>Stop Loss (₹)</label>
+  <label>Stop Loss</label>
   <input id="sl" type="number">
 
-  <label>Target (₹)</label>
+  <label>Target</label>
   <input id="target" type="number">
 
   <button onclick="calculate()">Calculate Trade</button>
@@ -92,7 +98,7 @@
   <canvas id="tradeChart" style="margin-top:25px;"></canvas>
 
   <footer>
-    Finsea24 • Trading Calculator • Made in India 🇮🇳
+    Finsea24 • Professional Trading Calculator • Netherlands 🇳🇱
   </footer>
 </div>
 
@@ -100,26 +106,31 @@
 let chart;
 
 function calculate() {
-  let entry = +entryInput.value || +entry.value;
-  let exitP = +exit.value;
-  let qty = +qty.value;
-  let sl = +sl.value;
-  let target = +target.value;
+  const currency = document.getElementById("currency").value;
 
-  let pnl = (exitP - entry) * qty;
-  let percent = ((exitP - entry) / entry) * 100;
-  let risk = entry - sl;
-  let reward = target - entry;
-  let rr = risk > 0 ? (reward / risk).toFixed(2) : "N/A";
-  let breakeven = entry;
+  const entry = Number(document.getElementById("entry").value);
+  const exitP = Number(document.getElementById("exit").value);
+  const qty = Number(document.getElementById("qty").value);
+  const sl = Number(document.getElementById("sl").value);
+  const target = Number(document.getElementById("target").value);
 
-  let pnlClass = pnl >= 0 ? "profit" : "loss";
+  if (!entry || !exitP || !qty) {
+    output.innerHTML = "<span class='loss'>Please fill Entry, Exit and Quantity</span>";
+    return;
+  }
+
+  const pnl = (exitP - entry) * qty;
+  const percent = ((exitP - entry) / entry) * 100;
+  const risk = sl ? entry - sl : null;
+  const reward = target ? target - entry : null;
+  const rr = (risk && reward && risk > 0) ? (reward / risk).toFixed(2) : "N/A";
+
+  const pnlClass = pnl >= 0 ? "profit" : "loss";
 
   output.innerHTML = `
-    <p>Profit / Loss: <span class="${pnlClass}">₹${pnl.toFixed(2)}</span></p>
+    <p>Profit / Loss: <span class="${pnlClass}">${currency}${pnl.toFixed(2)}</span></p>
     <p>Return: ${percent.toFixed(2)}%</p>
     <p>Risk–Reward Ratio: ${rr}</p>
-    <p>Break-even Price: ₹${breakeven}</p>
   `;
 
   drawChart(entry, exitP);
@@ -133,14 +144,17 @@ function drawChart(entry, exitP) {
     data: {
       labels: ["Entry Price", "Exit Price"],
       datasets: [{
-        label: "Price Comparison",
+        label: "Trade Price Comparison",
         data: [entry, exitP],
-        backgroundColor: ["#64748b", "#22c55e"]
+        backgroundColor: ["#94a3b8", "#22c55e"]
       }]
+    },
+    options: {
+      responsive: true
     }
   });
 }
 </script>
-
+  
 </body>
 </html>
